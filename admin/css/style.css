@@ -1,0 +1,16 @@
+.bg-card-red{
+  background: linear-gradient(to right, #ffbf96, #fe7096) !important;
+}
+.bg-card-blue{
+  background:linear-gradient(to right, #90caf9, #047edf 99%) !important;
+}
+.bg-card-green{
+  background: linear-gradient(to right, #84d9d2, #07cdae) !important;
+}
+
+.bg-sidebar,.btn-bg{
+  background-color: #8685E1;
+}
+.bg-navbar{
+	background-image: linear-gradient(to right top, #000000, #3a222c, #713e5a, #a85d92, #dd81d4);
+}
