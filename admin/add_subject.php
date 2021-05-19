@@ -9,16 +9,17 @@ if (strlen($_SESSION['alogin']) == 0) {
 }
 
 if (isset($_POST['submit'])) {
-    // $slno='';    
+    $slno='';    
     $heading = mysqli_real_escape_string($conn, $_POST['heading']);
-    $date = mysqli_real_escape_string($conn, $_POST['date']);
+    $date = strtotime(mysqli_real_escape_string($conn, $_POST['date']));
+    $new_date = date("d-m-Y", $date);
     $desc = mysqli_real_escape_string($conn, $_POST['desc']);
-    $vlink = mysqli_real_escape_string($conn, $_POST['vlink']);
+    $vlink = $_POST['vlink'];
     $category = mysqli_real_escape_string($conn, $_POST['category']);
 
 
 
-    $sql = "INSERT INTO `courses`(`heading`, `description`, `link`,`category`, `date`) VALUES ('" . $heading . "','" . $desc . "','" . $vlink . "','" . $category . "','" . $date . "')";
+    $sql = "INSERT INTO `subjects`( `heading`, `des`, `link`, `c_id`, `create_on`) VALUES ('" . $heading . "','" . $desc . "','" . $vlink . "','" . $category . "','" . $new_date . "')";
 
     if (mysqli_query($conn, $sql)) {
         $_SESSION['msg'] = "New record created successfully";
@@ -29,6 +30,7 @@ if (isset($_POST['submit'])) {
     }
 
     mysqli_close($conn);
+   
 }
 
 ?>
@@ -101,7 +103,7 @@ if (isset($_POST['submit'])) {
                                     </div>
                                     <div class="col-sm-6">
                                          <label for="date">Date</label>
-                                        <input type="date" class="form-control form-control-user" id="date" name="date" placeholder="Date" required>
+                                        <input type="date" data-date="dd mm yyyy"  class="form-control form-control-user" id="date" name="date" placeholder="Date" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -117,9 +119,16 @@ if (isset($_POST['submit'])) {
                                        <label for="category">Category</label>
                                         <select id="category" name="category" class="form-control" required>
                                         <option selected>Choose...</option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
-                                        <option value="C">C</option>
+                                        <?php
+                                            $query = "SELECT * FROM courses";
+                                            $results=mysqli_query($conn, $query);
+                                            //loop
+                                            foreach ($results as $courses){
+                                        ?>
+                                                <option value="<?php echo $courses["id"];?>"><?php echo $courses["name"];?></option>
+                                        <?php
+                                            }
+                                        ?>
                                     </select>
                                     </div>
                                 </div>

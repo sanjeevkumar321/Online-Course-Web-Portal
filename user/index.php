@@ -1,1 +1,2 @@
-comming soon---
+<?php
+header("Location:login.php");
