@@ -52,7 +52,9 @@ if (isset($_POST['submit'])) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
      <link href="css/style.css" rel="stylesheet">
-
+    <!-- Custom styles for this page -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+ <link href="css/style.css" rel="stylesheet">
 
 </head>
 
@@ -142,12 +144,99 @@ if (isset($_POST['submit'])) {
                 </div>
                     <!-- Content Row -->
                     
+                     <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">All Subject</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl no</th>
+                                            <th>Heading</th>
+                                            <th>Desc</th>
+                                            <th>Link</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
+                                           
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="fetchdata">
+                                       
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
 
             </div>
             <!-- End of Main Content -->
+
+
+<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Admin</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form  id="editform">
+                                <div class="form-group row">
+                                    <input type="text" id="editid"  hidden>
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                       <label for="editheading">Heading</label>
+                                        <input type="text" class="form-control form-control-user" id="editheading" name="editheading" placeholder="Heading" required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                         <label for="editdate">Date</label>
+                                        <input type="date" data-date="dd mm yyyy"  class="form-control form-control-user" id="editdate" name="editdate" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                     <label for="editdesc">Description</label>
+                                   <textarea class="form-control" id="editdesc" name="editdesc" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group row">
+                                     <div class="form-group col-md-6">
+                                        <label for="editvlink">Video Link</label>
+                                        <input type="text" class="form-control" id="editvlink" name="editvlink" required>
+                                     </div>
+                                    <div class="col-sm-6">
+                                       <label for="editcourse">Category</label>
+                                        <select id="editcourse" name="editcourse" class="form-control" required>
+                                        <option selected>Choose...</option>
+                                        <?php
+                                            $query = "SELECT * FROM courses";
+                                            $results=mysqli_query($conn, $query);
+                                            //loop
+                                            foreach ($results as $courses){
+                                        ?>
+                                                <option value="<?php echo $courses["id"];?>"><?php echo $courses["name"];?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                    </div>
+                                </div>         
+                            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="update();">update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- footer -->
  <?php include "includes/footer.php" ?>
@@ -169,6 +258,85 @@ if (isset($_POST['submit'])) {
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
 
+<script type="text/javascript">
+      function fetchdata(){
+        var fetch="fetch";
+     $.ajax({    //create an ajax request to display.php
+        type: "POST",
+        url: "action/action_subject.php",             
+        data: {action:fetch},           
+        success: function(response){                    
+            $("#fetchdata").html(response); 
+            // alert(response);
+              $('#dataTable').DataTable();
+        }
 
+    });
+    }
+$(document).ready(function() {             
+     fetchdata();
+});
+function deletedata(id){
+var deletedata="delete";
+     $.ajax({    //create an ajax request to display.php
+        type: "POST",
+        url: "action/action_subject.php",             
+        data: {action:deletedata,id:id},           
+        success: function(response){                   
+            alert(response);
+            fetchdata();
+        }
 
+    });
+}
+function edit(id){
+
+ var subjectdetails="subjectdetails";
+     $.ajax({    //create an ajax request to display.php
+        type: "POST",
+        url: "action/action_subject.php",           
+        data: {action:subjectdetails,id:id},  
+        dataType:"json",           
+        success: function(response){                    
+            // console.log(response[0].id);
+            $("#editid").val(response[0].id);
+            $("#editheading").val(response[0].heading);
+             $("#editdesc").val(response[0].des);
+             $("#editvlink").val(response[0].link);
+             $("#editcourse").val(response[0].c_id);
+             var newdate = response[0].create_on.split("-").reverse().join("-");
+             $("#editdate").val(newdate);
+            $('#editmodal').modal("show");
+        }
+
+    });
+}
+
+function update(){
+     var editid=$("#editid").val();
+             var editheading=$("#editheading").val();
+             var editdesc=$("#editdesc").val();
+             var editvlink=$("#editvlink").val();
+             var editcourse=$("#editcourse").val();
+             var editdate=$("#editdate").val();
+
+          var updatedata="updatedata";
+          $.ajax({    
+        type: "POST",
+        url: "action/action_subject.php",             
+        data: {action:updatedata,id:editid,editheading:editheading,editdesc:editdesc,editvlink:editvlink,editcourse:editcourse,editdate:editdate},           
+        success: function(response){                   
+            alert(response);
+          //   $("#editid").val("");
+          // $("#editname").val("");
+          $('#editmodal').modal("hide");
+            fetchdata();
+        }
+
+    });
+}
+</script>
+<!-- Page level plugins -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 </body></html>

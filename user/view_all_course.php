@@ -4,13 +4,14 @@ if (strlen($_SESSION['ulogin']) == 0) {
     header('location:index.php');}
 
 $c=json_decode($_SESSION["courses"]);
-$data="id LIKE '";
+$data="courses.id LIKE '";
  $i=0;
 while(count($c) > $i){
- $data.="".$c[$i]."' or id LIKE '";
+ $data.="".$c[$i]."' or courses.id LIKE '";
           $i++;
 }
-$_SESSION["courses_query"]= substr($data, 0, -29);
+$_SESSION["courses_query"]= substr($data, 0, -21);
+// echo $_SESSION["courses_query"];
  ?>
 <html lang="en"><head>
 

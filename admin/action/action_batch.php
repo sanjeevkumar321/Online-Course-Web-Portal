@@ -45,7 +45,7 @@ if(isset($_POST["action"]))
 									<td>'.$number.'</td>
 									<td>'.$row['name'].'</td>
 								
-								<td>
+								<td style="text-align: center;">
                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                         <button type="button" class="btn btn-primary" onclick="deactive('.$row['id'].')">
                                                             <i class="fas fa-eye"></i>

@@ -14,3 +14,7 @@
 .bg-navbar{
 	background-image: linear-gradient(to right top, #000000, #3a222c, #713e5a, #a85d92, #dd81d4);
 }
+.active-subject{
+    background-color: #8685E1 !important;   
+    color: #ffffff !important; 
+}

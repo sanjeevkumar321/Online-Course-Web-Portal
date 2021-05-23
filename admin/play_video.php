@@ -3,6 +3,9 @@ session_start();
 include('includes/config.php');
 if (strlen($_SESSION['alogin']) == 0) {
     header('location:index.php');}
+if(!isset($_GET['c']))    
+  {
+    header('location:index.php');}
     ?>
 <html lang="en"><head>
 
@@ -95,8 +98,9 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: hsl(328deg 100% 54%);
+  color: #8685E1;
 }
+
 </style>
 </head>
 
@@ -128,16 +132,18 @@ html, body {
 
                             if(isset($_GET['c']))
                             {
-                                $c = mysqli_real_escape_string($conn, $_GET['c']);
-                                $sql="select * from courses where category='$c'";
+                                $c = mysqli_real_escape_string($conn,  $_GET['c']);
+                                $sql="select * from subjects where c_id='$c'";
                                $result=mysqli_query($conn,$sql);
                                while($data = mysqli_fetch_row($result))
                                 {  
-                                    echo ' <div class="card mb-2 py-2 border-left-info" onclick=seturl("'.$data[1].'","'.$data[2].'","'.$data[3].'");>
+                                  // $json = array('hed'=>$data[1],'des'=>$data[2],'link'=>$data[3]);
+                            echo ' <div class="card mb-1 py-2 border-left-info subjects"   onclick="seturl(\''.str_replace("'", "\\'", $data[1]).'\', \''.str_replace("'", "\\'",  $data[2]).'\' ,\''.str_replace("'", "\\'",  $data[3]).'\' ,\''.str_replace("'", "\\'",  $data[5]).'\');">
                                             <div class="card-body">
                                              '.$data[1].'
                                             </div>
                                           </div>';
+                                  // echo json_encode($data);
                                 }
                             }
 
@@ -145,7 +151,7 @@ html, body {
 
                          ?>
                         </div>      
-                        <div class="col-md-9" id="video" style="overflow: auto; height: 600px;">   
+                        <div class="col-md-9" id="video" style="height: 600px;">   
 
                                  <div class="content" id="videolorder">
                                   <div class="spinner">
@@ -153,11 +159,19 @@ html, body {
                                     <circle cx="8" cy="8" r="7" stroke-width="2"/>
                                     </svg>
                                   </div>
-                                </div>              
+                                </div>       
+
             <div id="videocontener" style="display: none;">
-                <iframe id="youtubevideo" width="100%" height="80%" src="https://youtu.be/G0yrccheSac" frameborder="0" allowfullscreen></iframe>
-                <h1 id="heading"></h1>
-                <p id="des"></p>
+                <iframe id="youtubevideo" width="100%" height="80%" src="https://youtu.be/G0yrccheSac" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture allowfullscreen" style="  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);"></iframe>
+               
+                <div class="row pt-4">
+                   <h1 id="heading" class="col-md-10"></h1>
+                   <p id="date" class="col-md-2 text-right"></p>
+                </div>
+                 <div class="row">
+                   <p id="des" class="col-md-10 text-left"></p>
+                 </div>
             </div>
                         </div>                      
                     </div>
@@ -196,7 +210,7 @@ html, body {
     <script src="js/demo/chart-pie-demo.js"></script>
 
 <script type="text/javascript">
-    function seturl(hed,des,url){
+    function seturl(hed,des,url,date){
         $("#videolorder").show();
         $("#videocontener").hide();
         document.getElementById('youtubevideo').src = url;
@@ -205,11 +219,30 @@ html, body {
 
 $("#heading").text(hed);
 $("#des").text(des);
+$("#date").text(date);
+
     }
+
+
     $('#youtubevideo').on( 'load', function() {
    $("#videolorder").hide();
-$("#videocontener").show();
-});
+   $("#videocontener").show();});
+
+
+
+    $(".subjects").click(function() {
+              
+            // Select all list items
+            var listItems = $(".subjects");
+              
+            // Remove 'active' tag for all list items
+            for (let i = 0; i < listItems.length; i++) {
+                listItems[i].classList.remove("active-subject");
+            }
+              
+            // Add 'active' tag for currently selected item
+            this.classList.add("active-subject");
+        });
 </script>
 
 </body></html>

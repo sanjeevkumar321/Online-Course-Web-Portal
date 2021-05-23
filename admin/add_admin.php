@@ -140,7 +140,6 @@ if (isset($_POST['submit'])) {
                                             <th>Name</th>
                                             <th>Dept</th>
                                             <th>Usename</th>
-                                            <th>Password</th>
                                             <th>Action</th>
                                            
                                         </tr>

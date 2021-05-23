@@ -86,7 +86,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                
                       <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">All Admin</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">All Batchs</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -95,7 +95,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         <tr>
                                             <th>Sl no</th>
                                             <th>Name</th>
-                                            <th>Action</th>
+                                            <th style="text-align: center;">Action</th>
                                            
                                         </tr>
                                     </thead>

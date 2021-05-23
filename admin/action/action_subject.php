@@ -6,10 +6,11 @@ include('../includes/config.php');
 
 if(isset($_POST["action"]))
 {
+	
 	if($_POST["action"] == "delete")
 	{
 
-		$sql = "DELETE FROM admin WHERE id=".$_POST["id"]."";
+		$sql = "DELETE FROM subjects WHERE id=".$_POST["id"]."";
 
 			if (mysqli_query($conn, $sql)) {
 			  echo "Record deleted successfully";
@@ -17,13 +18,13 @@ if(isset($_POST["action"]))
 			  echo "Error deleting record: " . mysqli_error($conn);
 			}
 	}
-	// fetch admin
+	// fetch subjects
 	if($_POST["action"] == "fetch")
 	{
 
 				$data =  ''; 
 
-					$displayquery = "SELECT * FROM `admin`"; 
+					$displayquery = "SELECT * FROM `subjects`"; 
 					$result = mysqli_query($conn,$displayquery);
 
 						if(mysqli_num_rows($result) > 0){
@@ -33,9 +34,11 @@ if(isset($_POST["action"]))
 								
 								$data .= '<tr>  
 									<td>'.$number.'</td>
-									<td>'.$row['name'].'</td>
-									<td>'.$row['dept'].'</td>
-									<td>'.$row['username'].'</td>
+									<td>'.$row['heading'].'</td>
+									<td>'.$row['des'].'</td>
+									<td>'.$row['link'].'</td>
+									<td>'.$row['create_on'].'</td>
+								
 								<td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                         <button type="button" class="btn btn-primary" onclick="deactive('.$row['id'].')">
@@ -62,10 +65,10 @@ if(isset($_POST["action"]))
 	}
 
 
-	if($_POST["action"] == "admindetails")
+	if($_POST["action"] == "subjectdetails")
 	{
 
-		$result = mysqli_query($conn,"SELECT * FROM admin WHERE id=".$_POST["id"]."");
+		$result = mysqli_query($conn,"SELECT * FROM subjects WHERE id=".$_POST["id"]."");
 		$rows = array();
 	while($temp = mysqli_fetch_assoc($result)) {
     $rows[] = $temp;
@@ -75,8 +78,14 @@ if(isset($_POST["action"]))
 
 	if($_POST["action"] == "updatedata")
 	{
-		$query = "UPDATE `admin` SET `name`='".$_POST['editname']."',`dept`='".$_POST['editdept']."',`username`='".$_POST['editusername']."',`password`='".$_POST['editpassword']."' WHERE id=".$_POST['id'].";";
-		// echo $query;
+		$new_date =date("d-m-Y",strtotime($_POST['editdate']));
+		
+		$query = "UPDATE `subjects` SET 
+		`heading`='".$_POST['editheading']."',
+		`des`='".$_POST['editdesc']."',
+		`link`='".$_POST['editvlink']."',
+		`c_id`='".$_POST['editcourse']."',
+		`create_on`='".$new_date."'  WHERE id=".$_POST['id'].";";
 		if (mysqli_query($conn, $query)) {
 			  echo "update  successfully";
 			} else {

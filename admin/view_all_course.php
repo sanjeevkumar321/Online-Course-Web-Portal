@@ -22,6 +22,15 @@
     right: 0;
     height: 100%;
 }
+.card-body > a{
+  text-decoration: none !important;
+  text-decoration-style: none;
+}
+.card-body > p,a:hover {
+    color:white;
+    text-decoration:none !important;
+    cursor:pointer;
+}
 </style>
 </head>
 

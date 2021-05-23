@@ -9,16 +9,19 @@ if (strlen($_SESSION['alogin']) == 0) {
 }
 
 if (isset($_POST['submit'])) {
-    // $slno='';   
-       if(!empty($_POST['course'])) { 
+      if(!empty($_POST['course'])) { 
+   
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $pass = mysqli_real_escape_string($conn, $_POST['password']);
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $dept = mysqli_real_escape_string($conn, $_POST['dept']);
     $batch = mysqli_real_escape_string($conn, $_POST['batch']);
     $courses= json_encode($_POST['course']);
+    // $slno='';   
+     
          
-    $sql = "INSERT INTO `users`(`name`, `dept`, `username`, `password`, `batch`, `courses`) VALUES
+
+  $sql = "INSERT INTO `users`(`name`, `dept`, `username`, `password`, `batch`, `courses`) VALUES
      ('" . $name . "','" . $dept . "','" . $username . "','" . $pass . "','" . $batch . "','" . $courses . "')";
 
     if (mysqli_query($conn, $sql)) {
@@ -34,6 +37,31 @@ if (isset($_POST['submit'])) {
     mysqli_close($conn);
 }
 
+if (isset($_POST['editsubmit'])) {
+    // $slno='';   
+       if(!empty($_POST['editcourse'])) { 
+         $id = mysqli_real_escape_string($conn, $_POST['editid']);
+    $editusername = mysqli_real_escape_string($conn, $_POST['editusername']);
+    $editpass = mysqli_real_escape_string($conn, $_POST['editpassword']);
+    $editname = mysqli_real_escape_string($conn, $_POST['editname']);
+    $editdept = mysqli_real_escape_string($conn, $_POST['editdept']);
+    $editbatch = mysqli_real_escape_string($conn, $_POST['editbatch']);
+    $editcourses= json_encode($_POST['editcourse']);
+         
+   $sql = "UPDATE `users` SET `name`='" . $editname . "',`dept`='" . $editdept . "',`username`='" . $editusername . "',`password`='" . $editpass . "',`batch`='" . $editbatch . "',`courses`='" . $editcourses . "' where id='" . $id . "'";
+
+    if (mysqli_query($conn, $sql)) {
+        $_SESSION['msg'] = "update successfully";
+      header('location:#');
+    } else {
+        $_SESSION['msg'] = "erro";
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
+
+
+}
+    mysqli_close($conn);
+}
 ?>
 
 
@@ -202,6 +230,87 @@ if (isset($_POST['submit'])) {
             </div>
             <!-- End of Main Content -->
 
+
+<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form  id="editform" action="" method="post">
+             <div class="form-group row">
+                 <input type="text" id="editid" name="editid"  hidden>
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                       <label for="editname">Name</label>
+                                        <input type="text" class="form-control form-control-user" id="editname" name="editname" placeholder="name" required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                         <label for="editdept">Department</label>
+                                   <input type="text" class="form-control form-control-user" id="editdept" name="editdept" placeholder="Department" required>
+                                    </div>
+                                </div>
+                               
+                                <div class="form-group row">
+                                     <div class="form-group col-md-6">
+                                        <label for="editusername">username</label>
+                                        <input type="text" class="form-control" id="editusername" name="editusername" placeholder="username" required>
+                                     </div>
+                                    <div class="col-sm-6">
+                                       <label for="editpassword">Password</label>
+                            <input type="text" class="form-control" id="editpassword" name="editpassword" placeholder="editpassword" required>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                     <div class="form-group col-md-6">
+                                         <label for="">Batch</label>
+                                       <select  class="form-control" name="editbatch">
+                                           <?php  
+                                        $result=mysqli_query($conn,"select * from batch");
+                                        while($data = mysqli_fetch_row($result))
+                                        {   
+                                        echo '
+                                            <option value='.$data[1].'>'.$data[1].'</option>
+                                        ';
+                                        }
+                                    ?>
+                                       </select>
+                                     </div>
+
+                                      <div class="form-group col-md-6 row pt-4">
+                                         <!-- <label>Courses</label><br> -->
+                                    <?php  
+                                        $result=mysqli_query($conn,"select * from courses");
+                                        while($data = mysqli_fetch_row($result))
+                                        {   
+                                        echo '
+                                            <div class="form-check pl-5">
+                                            <input type="checkbox" class="edit-form-check-input" id='.$data[0].' value="'.$data[0].'" name="editcourse[]">
+                                            <label class="form-check-label" for="exampleCheck1">'.$data[1].'</label>
+                                          </div>
+
+                                        ';
+                                        }
+                                    ?>
+                                     </div>
+                                </div>
+                                                 
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" name="editsubmit">update</button>
+      </div>
+       
+    </div>
+  </div>
+</div>
+</form>
 <!-- footer -->
  <?php include "includes/footer.php" ?>
  
@@ -254,7 +363,7 @@ function deactive(id){
 
 }
 function edit(id){
-alert("abc");
+    $('input[name="editcourse[]"]').each(function() {this.checked = false;});
  var userdata="userdata";
      $.ajax({    //create an ajax request to display.php
         type: "POST",
@@ -262,13 +371,21 @@ alert("abc");
         data: {action:userdata,id:id},  
         dataType:"json",           
         success: function(response){                    
-        
+        console.log(response);
             var myArray = JSON.parse(response[0].courses);
-                
-                $('.form-check-input').filter(function () {    
-    if (myArray.indexOf(this.id) != -1)
-          return $(this).closest('div').find(':checkbox');
-}).prop("checked", true);
+              
+                $('.edit-form-check-input').filter(function () {    
+                if (myArray.indexOf(this.id) != -1)
+                return $(this).closest('div').find(':checkbox');
+                }).prop("checked", true);
+
+                    $("#editid").val(response[0].id);
+                    $("#editname").val(response[0].name);
+                     $("#editdept").val(response[0].dept);
+                     $("#editusername").val(response[0].username);
+                     $("#editbatch").val(response[0].batch);
+                      $("#editpassword").val(response[0].password);
+                   $('#editmodal').modal("show");
         }
 
     });
