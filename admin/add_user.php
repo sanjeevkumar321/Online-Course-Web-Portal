@@ -65,27 +65,8 @@ if (isset($_POST['editsubmit'])) {
 ?>
 
 
-<html lang="en"><head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin 2 - Dashboard</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
-      <!-- Custom styles for this page -->
-    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
- <link href="css/style.css" rel="stylesheet">
-</head>
-
+ <?php include "includes/header.php" ?>
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -110,7 +91,7 @@ if (isset($_POST['editsubmit'])) {
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Add user</h1>
+                        <!-- <h1 class="h3 mb-0 text-gray-800">Add user</h1> -->
                       
                     </div>
 
@@ -151,7 +132,7 @@ if (isset($_POST['editsubmit'])) {
                                          <label for="">Batch</label>
                                        <select  class="form-control" name="batch">
                                            <?php  
-                                        $result=mysqli_query($conn,"select * from batch");
+                                        $result=mysqli_query($conn,"select * from batch where status =1");
                                         while($data = mysqli_fetch_row($result))
                                         {   
                                         echo '
@@ -165,7 +146,7 @@ if (isset($_POST['editsubmit'])) {
                                       <div class="form-group col-md-6 row pt-4">
                                          <!-- <label>Courses</label><br> -->
                                     <?php  
-                                        $result=mysqli_query($conn,"select * from courses");
+                                        $result=mysqli_query($conn,"select * from courses where status =1");
                                         while($data = mysqli_fetch_row($result))
                                         {   
                                         echo '
@@ -207,7 +188,7 @@ if (isset($_POST['editsubmit'])) {
                                             <th>Password</th>
                                             <th>Batch</th>
                                             <th>course</th>
-                                            <th>Action</th>
+                                           <th style="text-align: center;">Action</th>
                                            
                                         </tr>
                                     </thead>
@@ -271,7 +252,7 @@ if (isset($_POST['editsubmit'])) {
                                          <label for="">Batch</label>
                                        <select  class="form-control" name="editbatch">
                                            <?php  
-                                        $result=mysqli_query($conn,"select * from batch");
+                                        $result=mysqli_query($conn,"select * from batch where status =1");
                                         while($data = mysqli_fetch_row($result))
                                         {   
                                         echo '
@@ -285,7 +266,7 @@ if (isset($_POST['editsubmit'])) {
                                       <div class="form-group col-md-6 row pt-4">
                                          <!-- <label>Courses</label><br> -->
                                     <?php  
-                                        $result=mysqli_query($conn,"select * from courses");
+                                        $result=mysqli_query($conn,"select * from courses where status =1");
                                         while($data = mysqli_fetch_row($result))
                                         {   
                                         echo '
@@ -404,10 +385,39 @@ var deletedata="delete";
 
     });
 }
-function view(course){
-          var myArray = course;
-        // console.log(course);
-        alert(myArray);
+// function view(course){
+//           var myArray = course;
+//         // console.log(course);
+//         alert(myArray);
+// }
+
+function active(id){
+var active="active";
+     $.ajax({    //create an ajax request to display.php
+        type: "POST",
+        url: "action/action_users.php",             
+        data: {action:active,id:id},           
+        success: function(response){         
+            alert(response);
+            fetchdata();
+        }
+
+    });
+}
+
+function deactive(id){
+    var deactive="deactive";
+     $.ajax({    //create an ajax request to display.php
+        type: "POST",
+        url: "action/action_users.php",             
+        data: {action:deactive,id:id},           
+        success: function(response){                    
+            alert(response);    
+             fetchdata();  
+        }
+
+    });
+
 }
 </script>
 

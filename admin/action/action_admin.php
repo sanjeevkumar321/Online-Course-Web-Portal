@@ -30,17 +30,26 @@ if(isset($_POST["action"]))
 
 							$number = 1;
 							while ($row = mysqli_fetch_array($result)) {
-								
+								if($row['status']==1){
+										$btn=' <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <button type="button" class="btn btn-primary" onclick="deactive('.$row['id'].')">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>'	;
+									}
+									else{
+										$btn=' <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <button type="button" class="btn btn-danger" onclick="active('.$row['id'].')">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>'	;
+									}
 								$data .= '<tr>  
 									<td>'.$number.'</td>
 									<td>'.$row['name'].'</td>
 									<td>'.$row['dept'].'</td>
 									<td>'.$row['username'].'</td>
-								<td>
+								<td style="text-align: center;">
                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <button type="button" class="btn btn-primary" onclick="deactive('.$row['id'].')">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
+                                                       '.$btn.'
                                                         <button type="button" class="btn btn-danger" onclick="deletedata('.$row['id'].')">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
@@ -76,6 +85,27 @@ if(isset($_POST["action"]))
 	if($_POST["action"] == "updatedata")
 	{
 		$query = "UPDATE `admin` SET `name`='".$_POST['editname']."',`dept`='".$_POST['editdept']."',`username`='".$_POST['editusername']."',`password`='".$_POST['editpassword']."' WHERE id=".$_POST['id'].";";
+		// echo $query;
+		if (mysqli_query($conn, $query)) {
+			  echo "update  successfully";
+			} else {
+			  echo "Error " . mysqli_error($conn);
+			}
+	}
+
+if($_POST["action"] == "deactive")
+	{
+		$query = "UPDATE `admin` SET `status`=0  WHERE id=".$_POST['id'].";";
+		// echo $query;
+		if (mysqli_query($conn, $query)) {
+			  echo "update  successfully";
+			} else {
+			  echo "Error " . mysqli_error($conn);
+			}
+	}
+if($_POST["action"] == "active")
+	{
+		$query = "UPDATE `admin` SET `status`=1  WHERE id=".$_POST['id'].";";
 		// echo $query;
 		if (mysqli_query($conn, $query)) {
 			  echo "update  successfully";
